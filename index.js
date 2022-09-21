@@ -151,28 +151,22 @@ function getDataFromRequest(request) {
 function getPayload(data) {
 
 	const payload = {
+		slug: data.slug,
 		name: data.type === 'theme' ? data.fileHeaders['Theme Name'] : data.fileHeaders['Plugin Name'],
+		homepage: (data.type === 'theme' ? data.fileHeaders['Theme URI'] : data.fileHeaders['Plugin URI']) || '',
 		type: data.type,
-		version: {
-			current: data.fileHeaders['Version'],
-			latest: data.latestRelease.tag_name
+		version: data.latestRelease.tag_name,
+		sections: {
+			description: data.fileHeaders['Description'] || '',
+			changelog: data.release.body || '',
 		},
-		description: data.fileHeaders['Description'] || '',
-		author: {
-			name: data.fileHeaders['Author'] || '',
-			url: data.fileHeaders['Author URI'] || ''
-		},
-		updated: data.release.published_at || '',
-		requires: {
-			wp: data.fileHeaders['Requires at least'] || '',
-			php: data.fileHeaders['Requires PHP'] || '',
-		},
-		tested: {
-			wp: data.fileHeaders['Tested up to'] || ''
-		},
-		url: (data.type === 'theme' ? data.fileHeaders['Theme URI'] : data.fileHeaders['Plugin URI']) || '',
-		download: data.release.assets[0].browser_download_url,
-		slug: data.slug
+		author: data.fileHeaders['Author'] || '',
+		author_homepage: data.fileHeaders['Author URI'] || '',
+		last_update: data.release.published_at || '',
+		requires: data.fileHeaders['Requires at least'] || '',
+		requires_php: data.fileHeaders['Requires PHP'] || '',
+		tested: data.fileHeaders['Tested up to'] || '',
+		download_url: data.release.assets[0].browser_download_url,
 	};
 
 	if (data.type === 'plugin') {
